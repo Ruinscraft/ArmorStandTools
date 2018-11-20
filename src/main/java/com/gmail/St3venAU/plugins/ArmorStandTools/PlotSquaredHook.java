@@ -9,7 +9,6 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-@SuppressWarnings("deprecation")
 class PlotSquaredHook {
 
 	private static Main plugin;
@@ -36,4 +35,5 @@ class PlotSquaredHook {
 		plugin.debug("plots.admin.build.other: " + plotPlayer.hasPermission("plots.admin.build.other"));
 		return plot.isAdded(uuid) || plotPlayer.hasPermission("plots.admin.build.other");
 	}
+
 }

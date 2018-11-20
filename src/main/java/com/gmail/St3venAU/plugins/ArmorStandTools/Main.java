@@ -29,11 +29,11 @@ public class Main extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		if(!loadSpigotVersionSupport()) {
+		if (!loadSpigotVersionSupport()) {
 			setEnabled(false);
 			return;
 		}
-		getServer().getPluginManager().registerEvents(new  MainListener(this), this);
+		getServer().getPluginManager().registerEvents(new MainListener(this), this);
 		Commands cmds = new Commands(this);
 		getCommand("astools").setExecutor(cmds);
 		getCommand("ascmd").setExecutor(cmds);
@@ -50,7 +50,7 @@ public class Main extends JavaPlugin {
 		Player p;
 		for(UUID uuid : savedInventories.keySet()) {
 			p = getServer().getPlayer(uuid);
-			if(p != null && p.isOnline()) {
+			if (p != null && p.isOnline()) {
 				restoreInventory(p);
 			}
 		}
@@ -60,12 +60,12 @@ public class Main extends JavaPlugin {
 	private boolean loadSpigotVersionSupport() {
 		String nmsVersion = getServer().getClass().getPackage().getName().replace(".", ",").split(",")[3];
 		String usingVersion;
-		if(nmsVersion.startsWith("v1_7") || nmsVersion.startsWith("v1_6") || nmsVersion.startsWith("v1_5") || nmsVersion.startsWith("v1_4")) {
+		if (nmsVersion.startsWith("v1_7") || nmsVersion.startsWith("v1_6") || nmsVersion.startsWith("v1_5") || nmsVersion.startsWith("v1_4")) {
 			getLogger().warning("This Craftbukkit/Spigot version is not supported. Craftbukkit/Spigot 1.8+ required. Loading plugin failed.");
 			return false;
 		}
 		try {
-			if(NMS.class.isAssignableFrom(Class.forName("com.gmail.St3venAU.plugins.ArmorStandTools.NMS_" + nmsVersion))) {
+			if (NMS.class.isAssignableFrom(Class.forName("com.gmail.St3venAU.plugins.ArmorStandTools.NMS_" + nmsVersion))) {
 				usingVersion = nmsVersion;
 				getLogger().info("Loading support for " + usingVersion);
 			} else {
@@ -87,7 +87,7 @@ public class Main extends JavaPlugin {
 	}
 
 	void returnArmorStand(ArmorStand as) {
-		if(as.hasMetadata("startLoc")) {
+		if (as.hasMetadata("startLoc")) {
 			for (MetadataValue value : as.getMetadata("startLoc")) {
 				if (value.getOwningPlugin() == this) {
 					as.teleport((Location) value.value());
@@ -116,13 +116,13 @@ public class Main extends JavaPlugin {
 		removeAllTools(p);
 		UUID uuid = p.getUniqueId();
 		ItemStack[] savedInv = savedInventories.get(uuid);
-		if(savedInv == null) return;
+		if (savedInv == null) return;
 		PlayerInventory plrInv = p.getInventory();
 		ItemStack[] newItems = plrInv.getContents().clone();
 		plrInv.setContents(savedInv);
 		savedInventories.remove(uuid);
 		for(ItemStack i : newItems) {
-			if(i == null) continue;
+			if (i == null) continue;
 			HashMap<Integer, ItemStack> couldntFit = plrInv.addItem(i);
 			for (ItemStack is : couldntFit.values()) {
 				p.getWorld().dropItem(p.getLocation(), is);
@@ -133,13 +133,13 @@ public class Main extends JavaPlugin {
 
 	void pickUpArmorStand(ArmorStand as, Player p, boolean newlySummoned) {
 		carryingArmorStand.put(p.getUniqueId(), as);
-		if(newlySummoned) return;
+		if (newlySummoned) return;
 		as.setMetadata("startLoc", new FixedMetadataValue(this, as.getLocation()));
 	}
 
 	void setName(Player p, ArmorStand as) {
 		Block b = Utils.findAnAirBlock(p.getLocation());
-		if(b == null) {
+		if (b == null) {
 			p.sendMessage(ChatColor.RED + Config.noAirError);
 			return;
 		}
@@ -153,7 +153,7 @@ public class Main extends JavaPlugin {
 
 	void setPlayerSkull(Player p, ArmorStand as) {
 		Block b = Utils.findAnAirBlock(p.getLocation());
-		if(b == null) {
+		if (b == null) {
 			p.sendMessage(ChatColor.RED + Config.noAirError);
 			return;
 		}
@@ -166,15 +166,15 @@ public class Main extends JavaPlugin {
 	}
 
 	boolean checkBlockPermission(Player p, Block b) {
-		if(b == null) return true;
+		if (b == null) return true;
 		if (isEnabled("PlotSquared") || isEnabled("PlotCubed")) {
 			Location l = b.getLocation();
 			debug("PlotSquaredHook.isPlotWorld(l): " + PlotSquaredHook.isPlotWorld(l));
-			if(PlotSquaredHook.isPlotWorld(l)) {
+			if (PlotSquaredHook.isPlotWorld(l)) {
 				return PlotSquaredHook.checkPermission(p, l);
 			}
 		}
-		if(Config.worldGuardPlugin != null) {
+		if (Config.worldGuardPlugin != null) {
 			return Config.worldGuardPlugin.canBuild(p, b);
 		}
 		BlockBreakEvent breakEvent = new BlockBreakEvent(b, p);
@@ -184,7 +184,7 @@ public class Main extends JavaPlugin {
 
 	boolean playerHasPermission(Player p, Block b, ArmorStandTool tool) {
 		debug("tool: " + tool);
-		if(tool != null) {
+		if (tool != null) {
 			debug("en: " + tool.isEnabled());
 			debug("perm: " + Utils.hasPermissionNode(p, tool.getPermission()));
 		}
@@ -196,7 +196,7 @@ public class Main extends JavaPlugin {
 	}
 
 	void debug(String msg) {
-		if(Config.debug) {
+		if (Config.debug) {
 			getLogger().log(Level.INFO, "[DEBUG] " + msg);
 		}
 	}
